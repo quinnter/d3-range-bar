@@ -16,5 +16,9 @@ const config: StorybookConfig = {
   core: {
     builder: "@storybook/builder-vite", // 👈 The builder enabled here.
   },
+  viteFinal: (config) => {
+    config.base = "/d3-range-bar/"; // Replace with your repository name
+    return config;
+  },
 };
 export default config;
