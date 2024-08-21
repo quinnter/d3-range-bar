@@ -4,6 +4,7 @@ import { StoryObj } from "@storybook/react";
 import { colourScales, ThemeName } from "../colourScales";
 import { weatherData } from "../data";
 import bratAlbum from "../assets/bratAlbum.png";
+import { Testing } from "../Testing";
 
 const themeOptions = Object.keys(colourScales) as ThemeName[];
 const themeLabels = themeOptions.reduce(
@@ -182,4 +183,12 @@ export const CharliXCX: Story = {
       </div>
     </div>
   ),
+};
+
+export const AnimatedDiv: Story = {
+  args: {
+    maxValue: 100
+  },
+
+  render: () => <Testing />
 };

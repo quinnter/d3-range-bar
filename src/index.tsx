@@ -13,6 +13,7 @@ type Props = {
   height?: number;
   colour?: string;
   theme?: ThemeName;
+  width?: number;
 };
 
 function RangeBar({
@@ -23,12 +24,14 @@ function RangeBar({
   radius = 12,
   height = 24,
   theme = "charli",
+  width,
 }: Props) {
   const marginLeft = 0;
   const marginRight = 0;
 
   const svgContainer = useRef(null);
-  const [width, setWidth] = useState<number>(0);
+  // const [width, setWidth] = useState<number>(0);
+  const [containerWidth, setContainerWidth] = useState<number>(width || 0);
 
   const uniqueId = useMemo(
     () => `clipRect-${Math.random().toString(36).substr(2, 9)}`,
@@ -36,22 +39,35 @@ function RangeBar({
   );
 
   const getSvgContainerSize = () => {
-    const newWidth = svgContainer.current?.clientWidth || 0;
-    setWidth(newWidth);
+    if (svgContainer.current) {
+      const newWidth = svgContainer.current.clientWidth || 0;
+      setContainerWidth(newWidth);
+    }
   };
 
   useEffect(() => {
-    // Detect height and width on render
-    getSvgContainerSize();
+    if (width !== undefined) {
+      // If width prop is provided, set the width and skip observing
+      setContainerWidth(width);
+    } else {
+      // If width prop is not provided, observe the container's size
+      getSvgContainerSize();
 
-    // Listen for resize changes, and detect dimensions again when they change
-    window.addEventListener("resize", getSvgContainerSize);
+      const resizeObserver = new ResizeObserver(() => {
+        getSvgContainerSize();
+      });
 
-    // Clean up event listener
-    return () => {
-      window.removeEventListener("resize", getSvgContainerSize);
-    };
-  }, []);
+      if (svgContainer.current) {
+        resizeObserver.observe(svgContainer.current);
+      }
+
+      return () => {
+        if (svgContainer.current) {
+          resizeObserver.unobserve(svgContainer.current);
+        }
+      };
+    }
+  }, [width]);
 
   const colourScale = colourScales[theme].domain([rangeMin, rangeMax]);
 
@@ -91,10 +107,10 @@ function RangeBar({
   const xScale = useMemo(() => {
     const scale = d3.scaleLinear(
       [rangeMin, rangeMax], // domain
-      [marginLeft, width - marginRight] // range
+      [marginLeft, containerWidth - marginRight] // range
     );
     return scale;
-  }, [width, rangeMin, rangeMax]);
+  }, [containerWidth, rangeMin, rangeMax]);
 
   const rectX = useMemo(() => {
     const value = xScale(minValue);
@@ -107,7 +123,7 @@ function RangeBar({
 
   return (
     <div ref={svgContainer} style={{ width: "100%" }}>
-      {width > 0 && (
+      {containerWidth > 0 && (
         <svg
           width="100%"
           height={height}
@@ -149,7 +165,7 @@ function RangeBar({
             <rect
               key="backgroundBar"
               x={0}
-              width={width}
+              width={containerWidth}
               height={height}
               fill={`url(#barGrad-${uniqueId})`}
               clipPath={`url(#${uniqueId})`}
