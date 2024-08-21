@@ -21,15 +21,31 @@ jobs:
       # Manual Checkout
       - uses: actions/checkout@v4
 
+      - name: Install pnpm
+      uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       # Set up Node
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
+          cache: 'pnpm'
 
-      # Install dependencies and build Storybook
-      - run: |
-          pnpm install
-          pnpm build-storybook
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Storybook
+        run: pnpm run build-storybook
+
+      - name: Set up pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Storybook artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: storybook-static
+          path: storybook-static
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
@@ -37,9 +53,3 @@ jobs:
         with:
           branch: main
           folder: storybook-static # The output directory of Storybook build
-
-      - name: Upload Storybook artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: storybook-static
-          path: storybook-static
