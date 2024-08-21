@@ -2,9 +2,7 @@ import React from "react";
 import AnimatedDiv from "./AnimatedDiv";
 import RangeBar from ".";
 
-type Props = {};
-
-export const Testing = (props: Props) => {
+export const Testing = () => {
   const [width, setWidth] = React.useState<number>(0);
 
   return (
