@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 import chroma from "chroma-js";
-import "./App.css";
 import { colourScales, ThemeName } from "./colourScales";
 
 type Props = {
