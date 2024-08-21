@@ -18,7 +18,7 @@ const config: StorybookConfig = {
   },
   staticDirs: ["../src/assets"],
   viteFinal: (config) => {
-    config.base = "/";
+    config.base = "./";
     return config;
   },
 };
