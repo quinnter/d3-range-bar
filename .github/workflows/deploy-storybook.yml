@@ -26,10 +26,20 @@ jobs:
         with:
           node-version: "18.x"
 
-      #👇 Add Storybook build and deploy to GitHub Pages as a step in the workflow
-      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+      # Install dependencies and build Storybook
+      - run: |
+          pnpm install
+          pnpm build-storybook
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
         with:
-          install_command: yarn install # default: npm ci
-          build_command: yarn build-storybook # default: npm run build-storybook
-          path: storybook-static # default: dist/storybook
-          checkout: false # default: true
+          branch: main
+          folder: storybook-static # The output directory of Storybook build
+
+      - name: Upload Storybook artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: storybook-static
+          path: storybook-static
