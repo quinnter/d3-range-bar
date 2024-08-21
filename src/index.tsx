@@ -37,6 +37,22 @@ function RangeBar({
     []
   );
 
+  if (rangeMin >= rangeMax) {
+    console.warn("rangeMin must be less than rangeMax");
+  }
+
+  if (minValue >= maxValue) {
+    console.warn("minValue must be less than maxValue");
+  }
+
+  if (maxValue > rangeMax) {
+    console.warn("maxValue must be less than or equal to rangeMax");
+  }
+
+  if (minValue < rangeMin) {
+    console.warn("minValue must be greater than or equal to rangeMin");
+  }
+
   const getSvgContainerSize = () => {
     if (svgContainer.current) {
       const newWidth = svgContainer.current.clientWidth || 0;
