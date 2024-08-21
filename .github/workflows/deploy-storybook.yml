@@ -44,12 +44,8 @@ jobs:
       - name: Upload Storybook artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: storybook-static
           path: storybook-static
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-        with:
-          branch: main
-          folder: storybook-static # The output directory of Storybook build
